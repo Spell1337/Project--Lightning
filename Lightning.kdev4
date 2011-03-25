@@ -1,0 +1,4 @@
+[Project]
+Name=Lightning
+Manager=KDevCMakeManager
+VersionControl=kdevgit
