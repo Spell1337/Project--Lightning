@@ -151,13 +151,14 @@ int main(int argc, char **argv)
     scoreText.SetText("Score: "+toString(score));
     app.Draw(scoreText);
     
+    app.Draw(liveBar);
     liveBarFill.SetSubRect(sf::IntRect(0, 0, liveBarFullImg.GetWidth()*player.getLife(), liveBarFullImg.GetHeight()));
     app.Draw(liveBarFill);
-    app.Draw(liveBar);
     
+    
+    app.Draw(energyBar);
     energyBarFill.SetSubRect(sf::IntRect(0, 0, energyBarFullImg.GetWidth()*player.getEnergy(), energyBarFullImg.GetHeight()));
     app.Draw(energyBarFill);
-    app.Draw(energyBar);
     
     app.Display();
   }
