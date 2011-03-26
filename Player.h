@@ -18,6 +18,8 @@ public:
   void moveDown(float delta);
   float getY(){ return mSprite.GetPosition().y; };
   const sf::Sprite& getSprite(){ return mSprite; };
+  float getLife(){ return mLife;};
+  float getEnergy(){ return mEnergyBar;};
 protected:
   float mLife;
   float mEnergyBar;

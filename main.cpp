@@ -26,26 +26,54 @@ int main(int argc, char **argv)
   //sf::String fpsText("FPS: 0", font, 24);
   const sf::Input& input = app.GetInput();
 
+  // Da playar
   sf::Image playerImg;
   playerImg.LoadFromFile("Player.png");
   Player player(playerImg);
   
+  // Da background
   sf::Image background;
   background.LoadFromFile("Background.png");
   float xPos=0.f;
   
+  // Some seperator between foreground and background
   sf::Image darkenerImg;
   darkenerImg.LoadFromFile("Darkener.png");
   sf::Sprite darkener(darkenerImg);
   darkener.SetScale(float(WINDOW_WIDTH)/darkenerImg.GetWidth(), float(WINDOW_HEIGHT)/darkenerImg.GetHeight());
   
+  // Enemies
   std::vector<Enemy*> enemies;
   sf::Image chaserImg;
   chaserImg.LoadFromFile("Chaser.png");
   Chaser::SetImage(chaserImg);
-  Chaser* chaser=new Chaser(50,  50);
-  chaser->setTarget(&player);
-  enemies.push_back(chaser);
+  std::vector<int> positions{100, 200, 300, 400, 500, 600};
+  foreach(int y, positions)
+  {
+    Chaser* chaser=new Chaser(sf::Randomizer::Random(0.f, 50.f),  y);
+    chaser->setTarget(&player);
+    enemies.push_back(chaser);
+  }
+  
+  // Energy bars
+  sf::Image liveBarImg;
+  liveBarImg.LoadFromFile("LiveBar.png");
+  sf::Image liveBarFullImg;
+  liveBarFullImg.LoadFromFile("LiveBarFill.png");
+  sf::Image energyBarImg;
+  energyBarImg.LoadFromFile("EnergyBar.png");
+  sf::Image energyBarFullImg;
+  energyBarFullImg.LoadFromFile("EnergyBarFill.png");
+  
+  sf::Sprite liveBar(liveBarImg);
+  sf::Sprite liveBarFill(liveBarFullImg);
+  liveBar    .SetPosition(20, WINDOW_HEIGHT-60);
+  liveBarFill.SetPosition(20, WINDOW_HEIGHT-60);
+  
+  sf::Sprite energyBar(energyBarImg);
+  sf::Sprite energyBarFill(energyBarFullImg);
+  energyBar    .SetPosition(20, WINDOW_HEIGHT-30);
+  energyBarFill.SetPosition(20, WINDOW_HEIGHT-30);
   
   while(app.IsOpened())
   {
@@ -96,6 +124,7 @@ int main(int argc, char **argv)
     // Show stuff
     app.Clear();
     
+    // Background
     {
       int x=-(int(xPos)%background.GetWidth());
       sf::Sprite bg_spriteA(background);
@@ -106,17 +135,27 @@ int main(int argc, char **argv)
       app.Draw(bg_spriteB);
     }
     
+    // Background seperator
     app.Draw(darkener);
     
+    // Enemies
     foreach(Enemy* enemy, enemies)
       app.Draw(enemy->getSprite());
     
+    // Player
     app.Draw(player.getSprite());
     
+    // HUD
     scoreText.SetText("Score: "+toString(score));
     app.Draw(scoreText);
-    //fpsText.SetText("FPS: "+toString(fps));
-    //app.Draw(fpsText);
+    
+    liveBarFill.SetSubRect(sf::IntRect(0, 0, liveBarFullImg.GetWidth()*player.getLife(), liveBarFullImg.GetHeight()));
+    app.Draw(liveBarFill);
+    app.Draw(liveBar);
+    
+    energyBarFill.SetSubRect(sf::IntRect(0, 0, energyBarFullImg.GetWidth()*player.getEnergy(), energyBarFullImg.GetHeight()));
+    app.Draw(energyBarFill);
+    app.Draw(energyBar);
     
     app.Display();
   }

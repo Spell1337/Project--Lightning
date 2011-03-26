@@ -21,6 +21,9 @@ protected:
     float mYDir;
     float mY;
     float mInternalTimer;
+    float mPersonality;
+    float mDistance;
+    float mPersonalityX;
 };
 
 #endif // CHASER_H
