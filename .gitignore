@@ -1,1 +1,6 @@
-*~ 
+.directory
+.kdev4/
+build/
+Docu/html/
+Docu/man/
+*~
