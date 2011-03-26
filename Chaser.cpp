@@ -37,11 +37,15 @@ void Chaser::update(float timeDelta)
   float targetY=mTarget->getY();
   float ownY=mSprite.GetPosition().y;
   float difference=targetY-ownY;
-  float targetYDir=sin(mInternalTimer)*10;
+  float targetYDir;
   
-  if(difference < -50)
-    targetYDir += std::max(difference/20.f, -10.f);
-  else if(difference > +50)
-    targetYDir += std::min(difference/20.f, +10.f);;
-  mYDir = boundby(-100.f, float((mYDir+targetYDir*(timeDelta*4.f))/(1.f+(timeDelta*4.f))), +100.f);
+  if(difference < -15)
+    targetYDir = std::max(-pow(abs(difference)/5., 3.), -6.);
+  else if(difference > +15)
+    targetYDir = std::min(+pow(abs(difference)/5., 3.), +6.);
+  
+  if(targetYDir > mYDir)
+    mYDir = boundby(mYDir, mYDir+10*timeDelta, targetYDir);
+  else
+    mYDir = boundby(targetYDir, mYDir-10*timeDelta, mYDir);
 }
