@@ -18,8 +18,8 @@ Player::Player(sf::Image& image)
 
 void Player::update(float delta)
 {
-  mYDir = mYDir-mYDir*std::min(delta*3, 1.0f);
   mSprite.Move(0, mYDir*delta);
+  mYDir = mYDir-mYDir*std::min(delta*3, 1.0f);
 }
 
 void Player::moveDown(float delta)

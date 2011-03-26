@@ -4,25 +4,24 @@
    See Copyright/Code.txt for details.
 // --------------------------------------------------------------- */
 
-#ifndef PLAYER_H
-#define PLAYER_H
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Image.hpp>
+#ifndef ENEMY_H
+#define ENEMY_H
 
-class Player
+#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+
+class Player;
+
+class Enemy
 {
 public:
-  Player(sf::Image& image);
-  void update(float delta);
-  void moveUp(float delta);
-  void moveDown(float delta);
-  float getY(){ return mSprite.GetPosition().y; };
+  virtual ~Enemy(){};
+  virtual void update(float timeDelta)=0;
+  void setTarget(Player* target){ mTarget = target; };
   const sf::Sprite& getSprite(){ return mSprite; };
 protected:
-  float mLife;
-  float mEnergyBar;
-  float mYDir;
+  Player* mTarget;
   sf::Sprite mSprite;
 };
 
-#endif // PLAYER_H
+#endif // ENEMY_H
