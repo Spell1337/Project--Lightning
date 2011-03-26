@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Helpers.h"
+#include "Player.h"
 
 int main(int argc, char **argv)
 {
@@ -11,15 +12,23 @@ int main(int argc, char **argv)
   int fps = 0;
   int fpsCounter = 0;
   sf::Clock basicClock;
-  sf::String fpsText("FPS: 0", sf::Font::GetDefaultFont(), 12);
+  sf::Font font;
+  font.LoadFromFile("Optimus.ttf", 24);
+  sf::String fpsText("FPS: 0", font, 24);
+  const sf::Input& input = app.GetInput();
+
   sf::Image playerImg;
   playerImg.LoadFromFile("Player.png");
-  sf::Sprite player(playerImg);
-  player.SetPosition(400, 300);
-  sf::Input& input = app.GetInput();
+  Player player(playerImg);
   
-  //sf::Font font;
-  //font.LoadFromFile("arial.ttf", 24);
+  sf::Image background;
+  background.LoadFromFile("Background.png");
+  float xPos=0.f;
+  
+  sf::Image darkenerImg;
+  darkenerImg.LoadFromFile("Darkener.png");
+  sf::Sprite darkener(darkenerImg);
+  
   while(app.IsOpened())
   {
     // Process events
@@ -51,12 +60,37 @@ int main(int argc, char **argv)
       fps = fpsCounter;
       fpsCounter = 0;
     }
+    
+    xPos+=timeDelta*800.f;
+    
+    player.update(timeDelta);
+    if(input.IsKeyDown(sf::Key::W))
+      player.moveUp(timeDelta);
+    else if(input.IsKeyDown(sf::Key::S))
+      player.moveDown(timeDelta);
 
     timeDelta=app.GetFrameTime();
+    
     // Show stuff
     app.Clear();
+    
+    {
+      int x=-(int(xPos)%background.GetWidth());
+      sf::Sprite bg_spriteA(background);
+      bg_spriteA.SetPosition(background.GetWidth()+x, 0.0f);
+      sf::Sprite bg_spriteB(background);
+      bg_spriteB.SetPosition(x, 0.0f);
+      app.Draw(bg_spriteA);
+      app.Draw(bg_spriteB);
+    }
+    
+    app.Draw(darkener);
+    
+    app.Draw(player.getSprite());
+    
     fpsText.SetText("FPS: "+toString(fps));
     app.Draw(fpsText);
+    
     app.Display();
   }
 
