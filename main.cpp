@@ -50,7 +50,7 @@ int main(int argc, char **argv)
   std::vector<int> positions{100, 200, 300, 400, 500, 600};
   foreach(int y, positions)
   {
-    Chaser* chaser=new Chaser(sf::Randomizer::Random(0.f, 50.f),  y);
+    Chaser* chaser=new Chaser(sf::Randomizer::Random(0.f, 100.f),  y);
     chaser->setTarget(&player);
     enemies.push_back(chaser);
   }
@@ -67,13 +67,15 @@ int main(int argc, char **argv)
   
   sf::Sprite liveBar(liveBarImg);
   sf::Sprite liveBarFill(liveBarFullImg);
-  liveBar    .SetPosition(20, WINDOW_HEIGHT-60);
-  liveBarFill.SetPosition(20, WINDOW_HEIGHT-60);
+  liveBar    .SetPosition(20, WINDOW_HEIGHT-120);
+  liveBarFill.SetPosition(20, WINDOW_HEIGHT-120);
+  liveBarFill.SetBlendMode(sf::Blend::Add);
   
   sf::Sprite energyBar(energyBarImg);
   sf::Sprite energyBarFill(energyBarFullImg);
-  energyBar    .SetPosition(20, WINDOW_HEIGHT-30);
-  energyBarFill.SetPosition(20, WINDOW_HEIGHT-30);
+  energyBar    .SetPosition(20, WINDOW_HEIGHT-60);
+  energyBarFill.SetPosition(20, WINDOW_HEIGHT-60);
+  energyBarFill.SetBlendMode(sf::Blend::Add);
   
   while(app.IsOpened())
   {
