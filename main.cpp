@@ -129,10 +129,17 @@ int main(int argc, char **argv)
   LoadSound("Sound/Shoot.wav");
   
   // Special effects
-  
   sf::Image exploImg;
   exploImg.LoadFromFile("Image/Explosion.png");
   FXSprite::RegisterFxType("Explosion", exploImg, 0.05f, 64);
+  
+  sf::Image playerExploImg;
+  playerExploImg.LoadFromFile("Image/ExplosionPlayer.png");
+  FXSprite::RegisterFxType("PlrExplosion", playerExploImg, 0.05, 64);
+  
+  sf::Image playerEnergyDash;
+  playerEnergyDash.LoadFromFile("Image/EnergyDash.png");
+  FXSprite::RegisterFxType("EnergyDash", playerEnergyDash, 0.05, 100);
   
   while(app.IsOpened())
   {
@@ -160,7 +167,7 @@ int main(int argc, char **argv)
         switch(Event.Key.Code)
         {
           case sf::Key::Space:
-            player.energyBash();
+            player.energyDash();
             break;
           default:
             break;

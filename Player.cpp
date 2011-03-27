@@ -5,6 +5,7 @@
 // --------------------------------------------------------------- */
 
 #include "Player.h"
+#include "FXSprite.h"
 #include <cmath>
 #include "main.h"
 
@@ -24,7 +25,7 @@ Player::Player(sf::Image& image, sf::Image& impulse)
 void Player::update(float delta)
 { 
   float xAdvancement=mSprite.GetPosition().x-350;
-  mSprite.Move(-xAdvancement*delta*4+mXDir*delta, mYDir*delta);
+  mSprite.Move(-xAdvancement*delta+mXDir*delta, mYDir*delta);
   
   mYDir = mYDir-mYDir*std::min(delta*3, 1.0f);
   mXDir = mXDir-mXDir*std::min(delta*3, 1.0f);
@@ -36,7 +37,7 @@ void Player::update(float delta)
   
   if(mEnergyBar < 1.0f)
   {
-    mEnergyBar+=0.1f*delta;
+    mEnergyBar+=0.4f*delta;
     if(mEnergyBar>1.0f)
       mEnergyBar=1.0f;
   }
@@ -62,12 +63,13 @@ void Player::moveRight(float delta)
   mXDir += 2000.f*delta;
 }
 
-void Player::energyBash()
+void Player::energyDash()
 {
-  if(mEnergyBar > 0.5f)
+  if(mEnergyBar > 0.9f)
   {
+    RegisterFx(new FXSprite("EnergyDash", mSprite.GetPosition().x+150, mSprite.GetPosition().y, 3));
     mSprite.SetX(mSprite.GetPosition().x+300);
-    mEnergyBar-=0.4f;
+    mEnergyBar-=0.9f;
   }
 }
 

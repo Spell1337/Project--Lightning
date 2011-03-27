@@ -18,7 +18,7 @@ public:
   void moveDown(float delta);
   void moveLeft(float delta);
   void moveRight(float delta);
-  void energyBash();
+  void energyDash();
   float getY(){ return mSprite.GetPosition().y; };
   const sf::Sprite& getSprite(){ return mSprite; };
   const sf::Sprite& getImpulseSprite(){ return mImpulse; };
