@@ -159,7 +159,7 @@ int main(int argc, char **argv)
       {
         switch(Event.Key.Code)
         {
-          case sf::Key::D:
+          case sf::Key::Space:
             player.energyBash();
             break;
           default:
@@ -226,12 +226,19 @@ int main(int argc, char **argv)
       player.moveUp(timeDelta);
     else if(input.IsKeyDown(sf::Key::S))
       player.moveDown(timeDelta);
+    
+    if(input.IsKeyDown(sf::Key::A))
+      player.moveLeft(timeDelta);
+    else if(input.IsKeyDown(sf::Key::D))
+      player.moveRight(timeDelta);
+    
     player.update(timeDelta);
 
     struct { float x; Obstacle* obstacle; } nearestObstacle{2000, NULL};
     struct { float x; Obstacle* obstacle; } secondNearestObstacle{2000, NULL};
     
-    foreach(Obstacle* obstacle, gObstacles)
+    list<Obstacle*> tempObstacles=gObstacles;
+    foreach(Obstacle* obstacle, tempObstacles)
     {
       obstacle->update(timeDelta, -gSpeed);
       
@@ -258,6 +265,12 @@ int main(int argc, char **argv)
         list<Enemy*> tempEnemies=gEnemies;
         foreach(Enemy* enemy, tempEnemies)
           obstacle->hitCheck(enemy);
+      }
+      
+      if(obstacle->getRect().Right < 0)
+      {
+        gObstacles.remove(obstacle);
+        delete obstacle;
       }
     }
     

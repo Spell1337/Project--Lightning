@@ -16,6 +16,8 @@ public:
   void update(float delta);
   void moveUp(float delta);
   void moveDown(float delta);
+  void moveLeft(float delta);
+  void moveRight(float delta);
   void energyBash();
   float getY(){ return mSprite.GetPosition().y; };
   const sf::Sprite& getSprite(){ return mSprite; };
@@ -26,11 +28,13 @@ public:
 protected:
   float mLife;
   float mEnergyBar;
+  float mXDir;
   float mYDir;
   float mTime;
   float mXAdvancement;
   sf::Sprite mSprite;
   sf::Sprite mImpulse;
+private:
 };
 
 #endif // PLAYER_H
