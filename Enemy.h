@@ -17,6 +17,7 @@ class Enemy
 public:
   virtual ~Enemy(){};
   virtual void update(float timeDelta)=0;
+  virtual void destroy();
   void setTarget(Player* target){ mTarget = target; };
   const sf::Sprite& getSprite(){ return mSprite; };
 protected:

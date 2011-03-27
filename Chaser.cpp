@@ -38,7 +38,7 @@ void Chaser::update(float timeDelta)
 {
   mInternalTimer+=timeDelta;
   mShootTimer+=timeDelta;
-  if(mShootTimer > 1.0f)
+  if(mShootTimer > 0.6f)
   {
     new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y   , 1000, sf::Randomizer::Random(87, 93));
     new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y-20, 1000, sf::Randomizer::Random(87, 93));

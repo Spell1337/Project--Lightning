@@ -5,4 +5,9 @@
 // --------------------------------------------------------------- */
 
 #include "Enemy.h"
+#include "main.h"
 
+void Enemy::destroy()
+{
+  RemoveEnemy(this);
+}

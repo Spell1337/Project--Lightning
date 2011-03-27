@@ -13,7 +13,6 @@ class Bullet
 {
 public:
   Bullet(const sf::Image& image, float x, float y, float dir, float rotation = 0);
-  ~Bullet();
   void update(float delta);
   void hitCheck(Player* player);
   sf::Sprite& getSprite(){ return mSprite; };

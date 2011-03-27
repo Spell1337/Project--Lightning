@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "Chaser.h"
 #include "Bullet.h"
+#include "Obstacle.h"
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
@@ -16,6 +17,8 @@
 using namespace std;
 
 list<Bullet*> gBullets;
+list<Enemy*> gEnemies;
+list<Obstacle*> gObstacles;
 
 int main(int argc, char **argv)
 {
@@ -26,6 +29,7 @@ int main(int argc, char **argv)
   int fps = 0;
   int fpsCounter = 0;
   float score = 0;
+  float backgroundSpeed = 1400.f;
   sf::Clock basicClock;
   sf::Font font;
   font.LoadFromFile("Misc/Optimus.ttf", 24);
@@ -53,7 +57,6 @@ int main(int argc, char **argv)
   darkener.SetScale(float(WINDOW_WIDTH)/darkenerImg.GetWidth(), float(WINDOW_HEIGHT)/darkenerImg.GetHeight());
   
   // Enemies
-  std::vector<Enemy*> enemies;
   sf::Image chaserImg;
   chaserImg.LoadFromFile("Image/Chaser.png");
   sf::Image bulletImg;
@@ -65,7 +68,18 @@ int main(int argc, char **argv)
   {
     Chaser* chaser=new Chaser(y/4,  y);
     chaser->setTarget(&player);
-    enemies.push_back(chaser);
+    gEnemies.push_back(chaser);
+  }
+  
+  // Obstacles
+  sf::Image obstacleImage;
+  obstacleImage.LoadFromFile("Image/Obstacle.png");
+  for(int i=0; i<50; i++)
+  {
+    if(sf::Randomizer::Random(0, 1))
+      gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
+    if(sf::Randomizer::Random(0, 1))
+      gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
   }
   
   // Energy bars
@@ -122,16 +136,28 @@ int main(int argc, char **argv)
       fpsCounter = 0;
     }
     
-    xPos+=timeDelta*800.f;
+    xPos+=timeDelta*backgroundSpeed;
     score+=10.f*timeDelta;
     
-    player.update(timeDelta);
     if(input.IsKeyDown(sf::Key::W))
       player.moveUp(timeDelta);
     else if(input.IsKeyDown(sf::Key::S))
       player.moveDown(timeDelta);
+    player.update(timeDelta);
 
-    foreach(Enemy* enemy, enemies)
+    foreach(Obstacle* obstacle, gObstacles)
+    {
+      obstacle->update(timeDelta, -backgroundSpeed);
+      if(obstacle->getX() < 400)
+      {
+        obstacle->hitCheck(&player);
+        list<Enemy*> tempEnemies=gEnemies;
+        foreach(Enemy* enemy, tempEnemies)
+          obstacle->hitCheck(enemy);
+      }
+    }
+    
+    foreach(Enemy* enemy, gEnemies)
       enemy->update(timeDelta);
     
     list<Bullet*> tempBullets=gBullets;
@@ -148,7 +174,7 @@ int main(int argc, char **argv)
     
     // Background
     {
-      int x=-(int(xPos)%background.GetWidth());
+      int x= (-(int(xPos/6)%background.GetWidth()));
       sf::Sprite bg_spriteA(background);
       bg_spriteA.SetPosition(background.GetWidth()+x, 0.0f);
       sf::Sprite bg_spriteB(background);
@@ -160,8 +186,12 @@ int main(int argc, char **argv)
     // Background seperator
     app.Draw(darkener);
     
+    // Obstacles
+    foreach(Obstacle* obstacle, gObstacles)
+      app.Draw(obstacle->getSprite());
+    
     // Enemies
-    foreach(Enemy* enemy, enemies)
+    foreach(Enemy* enemy, gEnemies)
       app.Draw(enemy->getSprite());
     
     // Player
@@ -188,9 +218,12 @@ int main(int argc, char **argv)
     app.Display();
   }
   
-  Enemy* enemy;
-  foreach(Enemy* enemy, enemies)
+  foreach(Enemy* enemy, gEnemies)
     delete enemy;
+  foreach(Bullet* bullet, gBullets)
+    delete bullet;
+  foreach(Obstacle* obstacle, gObstacles)
+    delete obstacle;
 
   return 0;
 }
@@ -203,6 +236,13 @@ void RegisterBullet(Bullet* bullet)
 void RemoveBullet(Bullet* bullet)
 {
   gBullets.remove(bullet);
+  delete bullet;
+}
+
+void RemoveEnemy(Enemy* enemy)
+{
+  gEnemies.remove(enemy);
+  delete enemy;
 }
 
 void GameOver()
