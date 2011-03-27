@@ -7,9 +7,11 @@
 #include "Enemy.h"
 #include "main.h"
 #include "Player.h"
+#include "FXSprite.h"
 
 void Enemy::destroy()
 {
   mTarget->doLife(0.05f);
+  RegisterFx(new FXSprite("Explosion", mSprite.GetPosition().x, mSprite.GetPosition().y, 2, 2, -gSpeed));
   RemoveEnemy(this);
 }

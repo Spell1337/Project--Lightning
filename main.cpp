@@ -10,6 +10,7 @@
 #include "Chaser.h"
 #include "Bullet.h"
 #include "Obstacle.h"
+#include "FXSprite.h"
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
@@ -19,6 +20,7 @@ using namespace std;
 list<Bullet*> gBullets;
 list<Enemy*> gEnemies;
 list<Obstacle*> gObstacles;
+list<FXSprite*> gEffects;
 
 map<string, sf::SoundBuffer> gSoundBuffer;
 map<string, float> gLastPlay;
@@ -125,6 +127,12 @@ int main(int argc, char **argv)
   //LoadSound("Sound/ShockB.wav");
   LoadSound("Sound/Shoot.wav");
   
+  // Special effects
+  
+  sf::Image exploImg;
+  exploImg.LoadFromFile("Image/Explosion.png");
+  FXSprite::RegisterFxType("Explosion", exploImg, 0.05f, 64);
+  
   while(app.IsOpened())
   {
     // Process events
@@ -179,17 +187,17 @@ int main(int argc, char **argv)
       }
       
       // Spawn new chasers
-      if(gNumChasers < 3)
+      if(gNumChasers < (3+gTime/30.0f))
       {
-        Chaser* chaser=new Chaser(sf::Randomizer::Random(0, 100),  sf::Randomizer::Random(0, 500));
+        Chaser* chaser=new Chaser(sf::Randomizer::Random(0, 200),  sf::Randomizer::Random(0, 500));
         chaser->setTarget(&player);
         gEnemies.push_back(chaser);
         gNumChasers++;
       }
       if(sf::Randomizer::Random(0, 4)==0)
-        if(gNumChasers < 7)
+        if(gNumChasers < (5+gTime/15.0f))
         {
-          Chaser* chaser=new Chaser(sf::Randomizer::Random(0, 100),  sf::Randomizer::Random(0, 500));
+          Chaser* chaser=new Chaser(sf::Randomizer::Random(0, 200),  sf::Randomizer::Random(0, 500));
           chaser->setTarget(&player);
           gEnemies.push_back(chaser);
           gNumChasers++;
@@ -249,6 +257,10 @@ int main(int argc, char **argv)
       bullet->hitCheck(&player);
     }
     
+    list<FXSprite*> tempEffects=gEffects;
+    foreach(FXSprite* fx, tempEffects)
+      fx->update(timeDelta);
+    
     timeDelta=app.GetFrameTime();
     
     // Show stuff
@@ -283,6 +295,10 @@ int main(int argc, char **argv)
     // Bullets
     foreach(Bullet* bullet, gBullets)
       app.Draw(bullet->getSprite());
+    
+    // Effects (Explosions and stuff)
+    foreach(FXSprite* fx, gEffects)
+      app.Draw(fx->getSprite());
     
     // HUD
     scoreText.SetText("Score: "+toString(score));
@@ -319,6 +335,17 @@ void RemoveBullet(Bullet* bullet)
 {
   gBullets.remove(bullet);
   delete bullet;
+}
+
+void RegisterFx(FXSprite* fx)
+{
+  gEffects.push_back(fx);
+}
+
+void RemoveFx(FXSprite* fx)
+{
+  gEffects.remove(fx);
+  delete fx;
 }
 
 void RemoveEnemy(Enemy* enemy)
