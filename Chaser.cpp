@@ -45,6 +45,7 @@ void Chaser::update(float timeDelta, Obstacle* nearestObstacle, Obstacle* second
     new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y   , 1000, sf::Randomizer::Random(87, 93));
     new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y-20, 1000, sf::Randomizer::Random(87, 93));
     mShootTimer=0.f;
+    PlaySound("Sound/Shoot.wav", 0.3, 1.2);
   }
   
   mY+=mYDir;

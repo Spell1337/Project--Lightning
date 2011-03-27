@@ -19,6 +19,12 @@ using namespace std;
 list<Bullet*> gBullets;
 list<Enemy*> gEnemies;
 list<Obstacle*> gObstacles;
+
+map<string, sf::SoundBuffer> gSoundBuffer;
+map<string, float> gLastPlay;
+list<sf::Sound*> gPlayingSounds;
+
+float gTime = 0.0f;
 float gSpeed = 1000.f;
 
 int gNumChasers=0;
@@ -114,6 +120,11 @@ int main(int argc, char **argv)
   music.SetLoop(true);
   music.Play();
   
+  // Sounds
+  //LoadSound("Sound/ShockA.wav");
+  //LoadSound("Sound/ShockB.wav");
+  LoadSound("Sound/Shoot.wav");
+  
   while(app.IsOpened())
   {
     // Process events
@@ -149,14 +160,25 @@ int main(int argc, char **argv)
     }
 
     // Calculate stuff
-    float curTime=basicClock.GetElapsedTime();
+    gTime=basicClock.GetElapsedTime();
     fpsCounter++;
-    if(curTime - lastSecond > 1.0)
+    if(gTime - lastSecond > 1.0)
     {
-      lastSecond = curTime;
+      lastSecond = gTime;
       fps = fpsCounter;
       fpsCounter = 0;
       
+      list<sf::Sound*> temp=gPlayingSounds;
+      foreach(sf::Sound* sound, temp)
+      {
+        if(sound->GetStatus()!=sf::Sound::Playing)
+        {
+          delete sound;
+          gPlayingSounds.remove(sound);
+        }
+      }
+      
+      // Spawn new chasers
       if(gNumChasers < 3)
       {
         Chaser* chaser=new Chaser(sf::Randomizer::Random(0, 100),  sf::Randomizer::Random(0, 500));
@@ -304,6 +326,25 @@ void RemoveEnemy(Enemy* enemy)
   gNumChasers--;
   gEnemies.remove(enemy);
   delete enemy;
+}
+
+void LoadSound(string name)
+{
+  gSoundBuffer[name].LoadFromFile(name);
+}
+
+void PlaySound(string name, float volume, float pitch)
+{
+  if(gTime - gLastPlay[name] > 0.2f)
+  {
+    sf::Sound* sound=new sf::Sound();
+    sound->SetBuffer(gSoundBuffer[name]);
+    sound->SetVolume(volume*100);
+    sound->SetPitch(pitch);
+    sound->Play();
+    gPlayingSounds.push_back(sound);
+    gLastPlay[name]=gTime;
+  }
 }
 
 void GameOver()
