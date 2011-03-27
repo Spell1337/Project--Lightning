@@ -34,9 +34,10 @@ void Obstacle::hitCheck(Player* player)
   if(!mHitPlayer)
   {
     const sf::Vector2f& pos=player->getSprite().GetPosition();
-    if(hits(sf::FloatRect(pos.x, pos.y, pos.x+5, pos.y+5)))
+    if(hits(sf::FloatRect(pos.x, pos.y-10, pos.x+5, pos.y-5)) && hits(sf::FloatRect(pos.x, pos.y+10, pos.x+5, pos.y+15)))
     {
-      player->doLife(-0.9);
+      // Bam, Headshot.
+      player->doLife(-1.1f);
       mHitPlayer=true;
     }
   }

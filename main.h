@@ -20,4 +20,7 @@ void RemoveEnemy(Enemy* enemy);
 void LoadSound(std::string name);
 void PlaySound(std::string name, float volume=1, float pitch=1);
 
+void DoPoints(int numPoints);
+
+void Reset();
 void GameOver();

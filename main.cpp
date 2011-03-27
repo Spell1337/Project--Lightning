@@ -28,6 +28,7 @@ list<sf::Sound*> gPlayingSounds;
 
 float gTime = 0.0f;
 float gSpeed = 800.f;
+float gPoints = 0;
 
 int gNumChasers=0;
 bool gGameOver=false;
@@ -40,11 +41,10 @@ int main(int argc, char **argv)
   float lastSecond = 0;
   int fps = 0;
   int fpsCounter = 0;
-  float score = 0;
   float backgroundAccleration = 20.0f;
   sf::Clock basicClock;
   sf::Font font;
-  font.LoadFromFile("Misc/Optimus.ttf", 24);
+  font.LoadFromFile("Misc/Optimus.ttf", 200);
   sf::String scoreText("Score: 0", font, 24);
   scoreText.SetX(8);
   //sf::String fpsText("FPS: 0", font, 24);
@@ -135,6 +135,14 @@ int main(int argc, char **argv)
   playerEnergyDash.LoadFromFile("Image/EnergyDash.png");
   FXSprite::RegisterFxType("EnergyDash", playerEnergyDash, 0.05, 100);
   
+  // Game over text
+  sf::String gameOverTextA("GAME OVER", font, 150);
+  gameOverTextA.SetPosition(50, 50);
+  sf::String gameOverTextB("", font, 150);
+  gameOverTextB.SetPosition(250, 300);
+  sf::String gameOverTextC("Press Space to Restart", font, 50);
+  gameOverTextC.SetPosition(300, 500);
+  
   while(app.IsOpened())
   {
     // Process events
@@ -144,22 +152,50 @@ int main(int argc, char **argv)
       if (Event.Type == sf::Event::Closed)
         app.Close();
 
-      if(!gGameOver)
-      {
-        if(Event.Type == sf::Event::KeyReleased)
+      if(Event.Type == sf::Event::KeyReleased)
+        switch(Event.Key.Code)
         {
-          switch(Event.Key.Code)
-          {
-            case sf::Key::Escape:
-              app.Close();
-              break;
-            default:
-              break;
-          }
+          case sf::Key::Escape:
+            app.Close();
+            break;
+          case sf::Key::Space:
+            if(gGameOver)
+            {
+              gGameOver = false;
+              xPos = 0;
+              for(int i=1; i<5; i++)
+              {
+                if(sf::Randomizer::Random(0, 1))
+                  gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
+                if(sf::Randomizer::Random(0, 1))
+                  gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
+              }
+              generatedEnvironment=10000;
+              player = Player(playerImg, playerImpulseAnim);
+              gSpeed = 800.f;
+              gPoints = 0;
+              
+              foreach(Enemy* enemy, gEnemies)
+                delete enemy;
+              foreach(Bullet* bullet, gBullets)
+                delete bullet;
+              foreach(Obstacle* obstacle, gObstacles)
+                delete obstacle;
+              foreach(FXSprite* effect, gEffects)
+                delete effect;
+              
+              gEnemies.clear();
+              gBullets.clear();
+              gObstacles.clear();
+              gEffects.clear();
+            }
+            break;
+          default:
+            break;
         }
-        
+      
+      if(!gGameOver)
         if(Event.Type == sf::Event::KeyPressed)
-        {
           switch(Event.Key.Code)
           {
             case sf::Key::Space:
@@ -168,8 +204,6 @@ int main(int argc, char **argv)
             default:
               break;
           }
-        }
-      }
     }
 
     // Calculate stuff
@@ -242,7 +276,7 @@ int main(int argc, char **argv)
     xPos+=timeDelta*gSpeed;
     gSpeed+=timeDelta*backgroundAccleration;
     if(!gGameOver)
-      score+=10.f*timeDelta+0.0001*xPos*timeDelta;
+      gPoints+=10.f*timeDelta+0.0001*xPos*timeDelta;
     
     if(!gGameOver)
     {
@@ -356,7 +390,7 @@ int main(int argc, char **argv)
       app.Draw(fx->getSprite());
     
     // HUD
-    scoreText.SetText("Score: "+toString(score));
+    scoreText.SetText("Score: "+toString(gPoints));
     app.Draw(scoreText);
     
     app.Draw(liveBar);
@@ -367,6 +401,14 @@ int main(int argc, char **argv)
     app.Draw(energyBar);
     energyBarFill.SetSubRect(sf::IntRect(0, 0, energyBarFullImg.GetWidth()*player.getEnergy(), energyBarFullImg.GetHeight()));
     app.Draw(energyBarFill);
+    
+    if(gGameOver)
+    {
+      app.Draw(gameOverTextA);
+      gameOverTextB.SetText(toString(gPoints));
+      app.Draw(gameOverTextB);
+      app.Draw(gameOverTextC);
+    }
     
     app.Display();
   }
@@ -427,6 +469,12 @@ void PlaySound(string name, float volume, float pitch)
     gPlayingSounds.push_back(sound);
     gLastPlay[name]=gTime;
   }
+}
+
+void DoPoints(int numPoints)
+{
+  if(!gGameOver)
+    gPoints+=numPoints;
 }
 
 void GameOver()

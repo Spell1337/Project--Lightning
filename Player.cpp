@@ -36,6 +36,13 @@ void Player::update(float delta)
   mImpulse.SetPosition(mSprite.GetPosition()+sf::Vector2f(-60, -25));
   mImpulse.SetSubRect(sf::IntRect(40*frame+1, 0, 40*frame+40, 40));
   
+  if(mLife < 1.0f)
+  {
+    mLife+=0.01f*delta;
+    if(mLife>1.0f)
+      mLife=1.0f;
+  }
+  
   if(mEnergyBar < 1.0f)
   {
     mEnergyBar+=1.0f*delta;

@@ -11,7 +11,7 @@
 
 void Enemy::destroy()
 {
-  mTarget->doLife(0.05f);
+  DoPoints(50);
   RegisterFx(new FXSprite("Explosion", mSprite.GetPosition().x, mSprite.GetPosition().y, 2, 2, -gSpeed));
   RemoveEnemy(this);
 }
