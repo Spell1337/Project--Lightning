@@ -43,11 +43,14 @@ void Chaser::update(float timeDelta, Obstacle* nearestObstacle, Obstacle* second
   mShootTimer+=timeDelta;
   if(mShootTimer > 0.6f)
   {
-    new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y   , 1000, sf::Randomizer::Random( 87, 93));
-    new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y-10, 1250, sf::Randomizer::Random( 87, 93));
-    new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y-20, 1000, sf::Randomizer::Random( 87, 93));
+    if(!gGameOver)
+    {
+      PlaySound("Sound/Shoot.wav", 0.3, 1.2);
+      new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y   , 1000, sf::Randomizer::Random( 87, 93));
+      new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y-10, 1250, sf::Randomizer::Random( 87, 93));
+      new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y-20, 1000, sf::Randomizer::Random( 87, 93));
+    }
     mShootTimer=0.f;
-    PlaySound("Sound/Shoot.wav", 0.3, 1.2);
   }
   
   mY+=mYDir;

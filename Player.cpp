@@ -15,6 +15,7 @@ Player::Player(sf::Image& image, sf::Image& impulse)
   mEnergyBar = 1.0f;
   mYDir = 0.0f;
   mXAdvancement = 0;
+  mDestroyed=false;
   mSprite.SetImage(image);
   mSprite.SetPosition(350, 400);
   mSprite.SetCenter(image.GetWidth()/2, image.GetHeight()/2);
@@ -37,7 +38,7 @@ void Player::update(float delta)
   
   if(mEnergyBar < 1.0f)
   {
-    mEnergyBar+=0.4f*delta;
+    mEnergyBar+=1.0f*delta;
     if(mEnergyBar>1.0f)
       mEnergyBar=1.0f;
   }
@@ -70,17 +71,23 @@ void Player::energyDash()
     RegisterFx(new FXSprite("EnergyDash", mSprite.GetPosition().x+150, mSprite.GetPosition().y, 3));
     mSprite.SetX(mSprite.GetPosition().x+300);
     mEnergyBar-=0.9f;
+    PlaySound("Sound/Psui.wav");
   }
 }
 
 void Player::doLife(float change)
 {
-  mLife+=change;
-  if(mLife>1.0f)
-    mLife=1.0f;
-  else if(mLife<0.0f)
+  if(!mDestroyed)
   {
-    mLife=0.0f;
-    GameOver();
+    mLife+=change;
+    if(mLife>1.0f)
+      mLife=1.0f;
+    else if(mLife<0.0f)
+    {
+      mLife=0.0f;
+      GameOver();
+      RegisterFx(new FXSprite("PlrExplosion", mSprite.GetPosition().x, mSprite.GetPosition().y, 5, 5));
+      mDestroyed=true;
+    }
   }
 }

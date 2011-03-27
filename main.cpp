@@ -27,9 +27,10 @@ map<string, float> gLastPlay;
 list<sf::Sound*> gPlayingSounds;
 
 float gTime = 0.0f;
-float gSpeed = 1000.f;
+float gSpeed = 800.f;
 
 int gNumChasers=0;
+bool gGameOver=false;
 
 int main(int argc, char **argv)
 {
@@ -40,7 +41,7 @@ int main(int argc, char **argv)
   int fps = 0;
   int fpsCounter = 0;
   float score = 0;
-  float backgroundAccleration = 10.0f;
+  float backgroundAccleration = 20.0f;
   sf::Clock basicClock;
   sf::Font font;
   font.LoadFromFile("Misc/Optimus.ttf", 24);
@@ -74,20 +75,12 @@ int main(int argc, char **argv)
   bulletImg.LoadFromFile("Image/Bullet.png");
   Chaser::SetImage(chaserImg);
   Chaser::SetBulletImage(bulletImg);
-  std::vector<int> positions{100, 300, 500};
-  foreach(int y, positions)
-  {
-    Chaser* chaser=new Chaser(y/4,  y);
-    chaser->setTarget(&player);
-    gEnemies.push_back(chaser);
-    gNumChasers++;
-  }
   
   // Obstacles
   sf::Image obstacleImage;
   obstacleImage.LoadFromFile("Image/Obstacle.png");
-  int generatedEnvironment=20000;
-  for(int i=1; i<10; i++)
+  int generatedEnvironment=10000;
+  for(int i=1; i<5; i++)
   {
     if(sf::Randomizer::Random(0, 1))
       gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
@@ -127,6 +120,7 @@ int main(int argc, char **argv)
   //LoadSound("Sound/ShockA.wav");
   //LoadSound("Sound/ShockB.wav");
   LoadSound("Sound/Shoot.wav");
+  LoadSound("Sound/Psui.wav");
   
   // Special effects
   sf::Image exploImg;
@@ -150,27 +144,30 @@ int main(int argc, char **argv)
       if (Event.Type == sf::Event::Closed)
         app.Close();
 
-      if(Event.Type == sf::Event::KeyReleased)
+      if(!gGameOver)
       {
-        switch(Event.Key.Code)
+        if(Event.Type == sf::Event::KeyReleased)
         {
-          case sf::Key::Escape:
-            app.Close();
-            break;
-          default:
-            break;
+          switch(Event.Key.Code)
+          {
+            case sf::Key::Escape:
+              app.Close();
+              break;
+            default:
+              break;
+          }
         }
-      }
-      
-      if(Event.Type == sf::Event::KeyPressed)
-      {
-        switch(Event.Key.Code)
+        
+        if(Event.Type == sf::Event::KeyPressed)
         {
-          case sf::Key::Space:
-            player.energyDash();
-            break;
-          default:
-            break;
+          switch(Event.Key.Code)
+          {
+            case sf::Key::Space:
+              player.energyDash();
+              break;
+            default:
+              break;
+          }
         }
       }
     }
@@ -199,10 +196,27 @@ int main(int argc, char **argv)
       {
         for(int i=1; i<10; i++)
         {
+          if(!sf::Randomizer::Random(0, 5))
+            gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), 0, obstacleImage));
+          else
+          {
+            if(sf::Randomizer::Random(0, 1))
+              gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
+            if(sf::Randomizer::Random(0, 1))
+              gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
+          }
           if(sf::Randomizer::Random(0, 1))
-            gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
+            gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(300, 500), sf::Randomizer::Random(-700, -500), obstacleImage));
           if(sf::Randomizer::Random(0, 1))
-            gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
+            gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(300, 500), sf::Randomizer::Random(500, 700), obstacleImage));
+          
+          if(sf::Randomizer::Random(0.f, xPos) > 50000)
+          {
+            if(sf::Randomizer::Random(0, 1))
+              gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(400, 800), sf::Randomizer::Random(-700, -500), obstacleImage));
+            if(sf::Randomizer::Random(0, 1))
+              gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(400, 800), sf::Randomizer::Random(500, 700), obstacleImage));
+          }
         }
         generatedEnvironment=xPos+20000;
       }
@@ -227,17 +241,21 @@ int main(int argc, char **argv)
     
     xPos+=timeDelta*gSpeed;
     gSpeed+=timeDelta*backgroundAccleration;
-    score+=10.f*timeDelta;
+    if(!gGameOver)
+      score+=10.f*timeDelta+0.0001*xPos*timeDelta;
     
-    if(input.IsKeyDown(sf::Key::Up))
-      player.moveUp(timeDelta);
-    else if(input.IsKeyDown(sf::Key::Down))
-      player.moveDown(timeDelta);
-    
-    if(input.IsKeyDown(sf::Key::Left))
-      player.moveLeft(timeDelta);
-    else if(input.IsKeyDown(sf::Key::Right))
-      player.moveRight(timeDelta);
+    if(!gGameOver)
+    {
+      if(input.IsKeyDown(sf::Key::Up))
+        player.moveUp(timeDelta);
+      else if(input.IsKeyDown(sf::Key::Down))
+        player.moveDown(timeDelta);
+      
+      if(input.IsKeyDown(sf::Key::Left))
+        player.moveLeft(timeDelta);
+      else if(input.IsKeyDown(sf::Key::Right))
+        player.moveRight(timeDelta);
+    }
     
     player.update(timeDelta);
 
@@ -323,8 +341,11 @@ int main(int argc, char **argv)
       app.Draw(enemy->getSprite());
     
     // Player
-    app.Draw(player.getImpulseSprite());
-    app.Draw(player.getSprite());
+    if(!gGameOver)
+    {
+      app.Draw(player.getImpulseSprite());
+      app.Draw(player.getSprite());
+    }
     
     // Bullets
     foreach(Bullet* bullet, gBullets)
@@ -410,5 +431,5 @@ void PlaySound(string name, float volume, float pitch)
 
 void GameOver()
 {
-  //cout << "Game over" << endl;
+  gGameOver=true;
 }

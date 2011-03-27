@@ -7,6 +7,7 @@ class Enemy;
 class Bullet;
 
 extern float gSpeed;
+extern bool gGameOver;
 
 void RegisterBullet(Bullet* bullet);
 void RemoveBullet(Bullet* bullet);

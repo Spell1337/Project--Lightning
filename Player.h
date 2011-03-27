@@ -26,6 +26,7 @@ public:
   float getEnergy(){ return mEnergyBar;};
   void doLife(float change);
 protected:
+  bool mDestroyed;
   float mLife;
   float mEnergyBar;
   float mXDir;
