@@ -185,9 +185,11 @@ int main(int argc, char **argv)
                 delete effect;
               
               gEnemies.clear();
+              gNumChasers=0;
               gBullets.clear();
               gObstacles.clear();
               gEffects.clear();
+              gTime=0.0f;
             }
             break;
           default:
