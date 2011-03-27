@@ -36,7 +36,7 @@ void Obstacle::hitCheck(Player* player)
     const sf::Vector2f& pos=player->getSprite().GetPosition();
     if(hits(sf::FloatRect(pos.x, pos.y, pos.x+5, pos.y+5)))
     {
-      player->doLife(-0.5);
+      player->doLife(-0.9);
       mHitPlayer=true;
     }
   }

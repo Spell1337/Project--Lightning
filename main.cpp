@@ -29,7 +29,8 @@ int main(int argc, char **argv)
   int fps = 0;
   int fpsCounter = 0;
   float score = 0;
-  float backgroundSpeed = 1400.f;
+  float backgroundSpeed = 1000.f;
+  float backgroundAccleration = 10.0f;
   sf::Clock basicClock;
   sf::Font font;
   font.LoadFromFile("Misc/Optimus.ttf", 24);
@@ -137,6 +138,7 @@ int main(int argc, char **argv)
     }
     
     xPos+=timeDelta*backgroundSpeed;
+    backgroundSpeed+=timeDelta*backgroundAccleration;
     score+=10.f*timeDelta;
     
     if(input.IsKeyDown(sf::Key::W))
