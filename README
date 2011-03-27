@@ -1,0 +1,5 @@
+Requirements: SFML, Boost (foreach Header)
+
+Linux:
+cmake .
+make
