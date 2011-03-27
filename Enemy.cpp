@@ -6,8 +6,10 @@
 
 #include "Enemy.h"
 #include "main.h"
+#include "Player.h"
 
 void Enemy::destroy()
 {
+  mTarget->doLife(0.2f);
   RemoveEnemy(this);
 }
