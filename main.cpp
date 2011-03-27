@@ -117,8 +117,8 @@ int main(int argc, char **argv)
   music.Play();
   
   // Sounds
-  //LoadSound("Sound/ShockA.wav");
-  //LoadSound("Sound/ShockB.wav");
+  LoadSound("Sound/Boom.wav");
+  LoadSound("Sound/BoomPlayer.wav");
   LoadSound("Sound/Shoot.wav");
   LoadSound("Sound/Psui.wav");
   

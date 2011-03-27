@@ -95,6 +95,7 @@ void Player::doLife(float change)
       GameOver();
       RegisterFx(new FXSprite("PlrExplosion", mSprite.GetPosition().x, mSprite.GetPosition().y, 5, 5));
       mDestroyed=true;
+      PlaySound("Sound/BoomPlayer.wav");
     }
   }
 }

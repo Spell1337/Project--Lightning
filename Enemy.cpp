@@ -14,4 +14,5 @@ void Enemy::destroy()
   DoPoints(50);
   RegisterFx(new FXSprite("Explosion", mSprite.GetPosition().x, mSprite.GetPosition().y, 2, 2, -gSpeed));
   RemoveEnemy(this);
+  PlaySound("Sound/Boom.wav");
 }
