@@ -86,7 +86,8 @@ int main(int argc, char **argv)
   // Obstacles
   sf::Image obstacleImage;
   obstacleImage.LoadFromFile("Image/Obstacle.png");
-  for(int i=1; i<50; i++)
+  int generatedEnvironment=20000;
+  for(int i=1; i<10; i++)
   {
     if(sf::Randomizer::Random(0, 1))
       gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
@@ -184,6 +185,19 @@ int main(int argc, char **argv)
           delete sound;
           gPlayingSounds.remove(sound);
         }
+      }
+      
+      // Generate new environment
+      if(xPos > generatedEnvironment)
+      {
+        for(int i=1; i<10; i++)
+        {
+          if(sf::Randomizer::Random(0, 1))
+            gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
+          if(sf::Randomizer::Random(0, 1))
+            gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
+        }
+        generatedEnvironment=xPos+20000;
       }
       
       // Spawn new chasers
