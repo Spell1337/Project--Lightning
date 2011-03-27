@@ -128,6 +128,18 @@ int main(int argc, char **argv)
             break;
         }
       }
+      
+      if(Event.Type == sf::Event::KeyPressed)
+      {
+        switch(Event.Key.Code)
+        {
+          case sf::Key::D:
+            player.energyBash();
+            break;
+          default:
+            break;
+        }
+      }
     }
 
     // Calculate stuff
