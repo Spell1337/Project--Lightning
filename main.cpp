@@ -28,7 +28,7 @@ int main(int argc, char **argv)
   float score = 0;
   sf::Clock basicClock;
   sf::Font font;
-  font.LoadFromFile("Optimus.ttf", 24);
+  font.LoadFromFile("Misc/Optimus.ttf", 24);
   sf::String scoreText("Score: 0", font, 24);
   scoreText.SetX(8);
   //sf::String fpsText("FPS: 0", font, 24);
@@ -36,28 +36,28 @@ int main(int argc, char **argv)
 
   // Da playar
   sf::Image playerImg;
-  playerImg.LoadFromFile("Player.png");
+  playerImg.LoadFromFile("Image/Player.png");
   sf::Image playerImpulseAnim;
-  playerImpulseAnim.LoadFromFile("Impulse.png");
+  playerImpulseAnim.LoadFromFile("Image/Impulse.png");
   Player player(playerImg, playerImpulseAnim);
   
   // Da background
   sf::Image background;
-  background.LoadFromFile("Background.png");
+  background.LoadFromFile("Image/Background.png");
   float xPos=0.f;
   
   // Some seperator between foreground and background
   sf::Image darkenerImg;
-  darkenerImg.LoadFromFile("Darkener.png");
+  darkenerImg.LoadFromFile("Image/Darkener.png");
   sf::Sprite darkener(darkenerImg);
   darkener.SetScale(float(WINDOW_WIDTH)/darkenerImg.GetWidth(), float(WINDOW_HEIGHT)/darkenerImg.GetHeight());
   
   // Enemies
   std::vector<Enemy*> enemies;
   sf::Image chaserImg;
-  chaserImg.LoadFromFile("Chaser.png");
+  chaserImg.LoadFromFile("Image/Chaser.png");
   sf::Image bulletImg;
-  bulletImg.LoadFromFile("Bullet.png");
+  bulletImg.LoadFromFile("Image/Bullet.png");
   Chaser::SetImage(chaserImg);
   Chaser::SetBulletImage(bulletImg);
   std::vector<int> positions{100, 300, 500};
@@ -70,13 +70,13 @@ int main(int argc, char **argv)
   
   // Energy bars
   sf::Image liveBarImg;
-  liveBarImg.LoadFromFile("LiveBar.png");
+  liveBarImg.LoadFromFile("Image/LiveBar.png");
   sf::Image liveBarFullImg;
-  liveBarFullImg.LoadFromFile("LiveBarFill.png");
+  liveBarFullImg.LoadFromFile("Image/LiveBarFill.png");
   sf::Image energyBarImg;
-  energyBarImg.LoadFromFile("EnergyBar.png");
+  energyBarImg.LoadFromFile("Image/EnergyBar.png");
   sf::Image energyBarFullImg;
-  energyBarFullImg.LoadFromFile("EnergyBarFill.png");
+  energyBarFullImg.LoadFromFile("Image/EnergyBarFill.png");
   
   sf::Sprite liveBar(liveBarImg);
   sf::Sprite liveBarFill(liveBarFullImg);
