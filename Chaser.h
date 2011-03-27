@@ -16,11 +16,14 @@ public:
     Chaser(float x, float y);
     virtual void update(float timeDelta);
     static void SetImage(const sf::Image& newImage){ gImage = newImage; };
+    static void SetBulletImage(const sf::Image& newImage){ gBulletImg = newImage; };
 protected:
     static sf::Image gImage;
+    static sf::Image gBulletImg;
     float mYDir;
     float mY;
     float mInternalTimer;
+    float mShootTimer;
     float mPersonality;
     float mDistance;
     float mPersonalityX;

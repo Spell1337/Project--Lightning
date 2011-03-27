@@ -7,14 +7,18 @@
 #include "Chaser.h"
 #include "Player.h"
 #include <SFML/System.hpp>
+#include "Bullet.h"
 
 sf::Image Chaser::gImage;
+sf::Image Chaser::gBulletImg;
 
 Chaser::Chaser(float x, float y)
 {
   mSprite.SetImage(gImage);
+  mSprite.SetCenter(gImage.GetWidth()/2, gImage.GetHeight()/2);
   mSprite.SetPosition(x, y);
   mYDir = 0.0f;
+  mShootTimer = sf::Randomizer::Random(-2.f, 0.f);
   mInternalTimer = sf::Randomizer::Random(0.f, 20.f);
   mPersonality = sf::Randomizer::Random(-1.f, 1.f);
   mY = y;
@@ -33,6 +37,14 @@ A boundby(A min, A val, A max)
 void Chaser::update(float timeDelta)
 {
   mInternalTimer+=timeDelta;
+  mShootTimer+=timeDelta;
+  if(mShootTimer > 1.0f)
+  {
+    new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y   , 1000, sf::Randomizer::Random(87, 93));
+    new Bullet(gBulletImg, mSprite.GetPosition().x, mSprite.GetPosition().y-20, 1000, sf::Randomizer::Random(87, 93));
+    mShootTimer=0.f;
+  }
+  
   mY+=mYDir;
   mSprite.SetY(mY);
   

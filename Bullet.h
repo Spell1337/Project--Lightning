@@ -8,13 +8,18 @@
 #define BULLET_H
 #include <SFML/Graphics/Sprite.hpp>
 
+class Player;
 class Bullet
 {
 public:
-  void update();
+  Bullet(const sf::Image& image, float x, float y, float dir, float rotation = 0);
+  ~Bullet();
+  void update(float delta);
+  void hitCheck(Player* player);
   sf::Sprite& getSprite(){ return mSprite; };
 protected:
   sf::Sprite mSprite;
+  sf::Vector2f mDir;
 };
 
 #endif // BULLET_H

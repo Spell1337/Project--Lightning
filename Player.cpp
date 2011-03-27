@@ -6,20 +6,29 @@
 
 #include "Player.h"
 #include <cmath>
+#include "main.h"
 
-Player::Player(sf::Image& image)
+Player::Player(sf::Image& image, sf::Image& impulse)
 {
   mLife = 1.0f;
   mEnergyBar = 1.0f;
   mYDir = 0.0f;
   mSprite.SetImage(image);
-  mSprite.SetPosition(200, 400);
+  mSprite.SetPosition(250, 400);
+  mSprite.SetCenter(image.GetWidth()/2, image.GetHeight()/2);
+  mImpulse.SetImage(impulse);
+  mImpulse.SetBlendMode(sf::Blend::Add);
 }
 
 void Player::update(float delta)
 {
   mSprite.Move(0, mYDir*delta);
   mYDir = mYDir-mYDir*std::min(delta*3, 1.0f);
+  mTime+=delta;
+  
+  int frame=int(mTime*8)%5;
+  mImpulse.SetPosition(mSprite.GetPosition()+sf::Vector2f(-60, -25));
+  mImpulse.SetSubRect(sf::IntRect(40*frame+1, 0, 40*frame+40, 40));
 }
 
 void Player::moveDown(float delta)
@@ -30,4 +39,16 @@ void Player::moveDown(float delta)
 void Player::moveUp(float delta)
 {
   mYDir -= 2000.f*delta;
+}
+
+void Player::doLife(float change)
+{
+  mLife+=change;
+  if(mLife>1.0f)
+    mLife=1.0f;
+  else if(mLife<0.0f)
+  {
+    mLife=0.0f;
+    GameOver();
+  }
 }

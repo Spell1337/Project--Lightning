@@ -1,3 +1,6 @@
+
+#include "main.h"
+#include <list>
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -5,9 +8,14 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Chaser.h"
+#include "Bullet.h"
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
+
+using namespace std;
+
+list<Bullet*> gBullets;
 
 int main(int argc, char **argv)
 {
@@ -29,7 +37,9 @@ int main(int argc, char **argv)
   // Da playar
   sf::Image playerImg;
   playerImg.LoadFromFile("Player.png");
-  Player player(playerImg);
+  sf::Image playerImpulseAnim;
+  playerImpulseAnim.LoadFromFile("Impulse.png");
+  Player player(playerImg, playerImpulseAnim);
   
   // Da background
   sf::Image background;
@@ -46,11 +56,14 @@ int main(int argc, char **argv)
   std::vector<Enemy*> enemies;
   sf::Image chaserImg;
   chaserImg.LoadFromFile("Chaser.png");
+  sf::Image bulletImg;
+  bulletImg.LoadFromFile("Bullet.png");
   Chaser::SetImage(chaserImg);
-  std::vector<int> positions{100, 200, 300, 400, 500, 600};
+  Chaser::SetBulletImage(bulletImg);
+  std::vector<int> positions{100, 300, 500};
   foreach(int y, positions)
   {
-    Chaser* chaser=new Chaser(sf::Randomizer::Random(0.f, 100.f),  y);
+    Chaser* chaser=new Chaser(y/4,  y);
     chaser->setTarget(&player);
     enemies.push_back(chaser);
   }
@@ -121,6 +134,13 @@ int main(int argc, char **argv)
     foreach(Enemy* enemy, enemies)
       enemy->update(timeDelta);
     
+    list<Bullet*> tempBullets=gBullets;
+    foreach(Bullet* bullet, tempBullets)
+    {
+      bullet->update(timeDelta);
+      bullet->hitCheck(&player);
+    }
+    
     timeDelta=app.GetFrameTime();
     
     // Show stuff
@@ -145,7 +165,12 @@ int main(int argc, char **argv)
       app.Draw(enemy->getSprite());
     
     // Player
+    app.Draw(player.getImpulseSprite());
     app.Draw(player.getSprite());
+    
+    // Bullets
+    foreach(Bullet* bullet, gBullets)
+      app.Draw(bullet->getSprite());
     
     // HUD
     scoreText.SetText("Score: "+toString(score));
@@ -170,4 +195,17 @@ int main(int argc, char **argv)
   return 0;
 }
 
+void RegisterBullet(Bullet* bullet)
+{
+  gBullets.push_back(bullet);
+}
 
+void RemoveBullet(Bullet* bullet)
+{
+  gBullets.remove(bullet);
+}
+
+void GameOver()
+{
+  //cout << "Game over" << endl;
+}

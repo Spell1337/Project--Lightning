@@ -12,19 +12,23 @@
 class Player
 {
 public:
-  Player(sf::Image& image);
+  Player(sf::Image& image, sf::Image& impulse);
   void update(float delta);
   void moveUp(float delta);
   void moveDown(float delta);
   float getY(){ return mSprite.GetPosition().y; };
   const sf::Sprite& getSprite(){ return mSprite; };
+  const sf::Sprite& getImpulseSprite(){ return mImpulse; };
   float getLife(){ return mLife;};
   float getEnergy(){ return mEnergyBar;};
+  void doLife(float change);
 protected:
   float mLife;
   float mEnergyBar;
   float mYDir;
+  float mTime;
   sf::Sprite mSprite;
+  sf::Sprite mImpulse;
 };
 
 #endif // PLAYER_H
