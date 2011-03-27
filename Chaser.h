@@ -14,7 +14,7 @@ class Chaser : public Enemy
 {
 public:
     Chaser(float x, float y);
-    virtual void update(float timeDelta);
+    virtual void update(float timeDelta, Obstacle* nearestObstacle, Obstacle* secondNearestObstacle);
     static void SetImage(const sf::Image& newImage){ gImage = newImage; };
     static void SetBulletImage(const sf::Image& newImage){ gBulletImg = newImage; };
 protected:

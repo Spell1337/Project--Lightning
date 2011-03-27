@@ -8,6 +8,8 @@
 #include "Player.h"
 #include <SFML/System.hpp>
 #include "Bullet.h"
+#include "Obstacle.h"
+#include "main.h"
 
 sf::Image Chaser::gImage;
 sf::Image Chaser::gBulletImg;
@@ -34,7 +36,7 @@ A boundby(A min, A val, A max)
   return val;
 }
 
-void Chaser::update(float timeDelta)
+void Chaser::update(float timeDelta, Obstacle* nearestObstacle, Obstacle* secondNearestObstacle)
 {
   mInternalTimer+=timeDelta;
   mShootTimer+=timeDelta;
@@ -47,21 +49,39 @@ void Chaser::update(float timeDelta)
   
   mY+=mYDir;
   mSprite.SetY(mY);
+  //mSprite.SetColor(sf::Color(255, 255, 255));
   
   float targetY=mTarget->getY();
+  static const float checkDistance=gSpeed;
+  if(nearestObstacle)
+    if(nearestObstacle->hits(sf::FloatRect(mSprite.GetPosition().x, mSprite.GetPosition().y+mYDir, mSprite.GetPosition().x+checkDistance, mSprite.GetPosition().y+50+mYDir)))
+    {
+      //mSprite.SetColor(sf::Color(255, 0, 0));
+      if(!nearestObstacle->hits(sf::FloatRect(mSprite.GetPosition().x, mSprite.GetPosition().y+250, mSprite.GetPosition().x+checkDistance, mSprite.GetPosition().y+300)))
+      {
+        //mSprite.SetColor(sf::Color(255, 255, 0));
+        targetY=mY+300;
+      }
+      else if(!nearestObstacle->hits(sf::FloatRect(mSprite.GetPosition().x, mSprite.GetPosition().y-250, mSprite.GetPosition().x+checkDistance, mSprite.GetPosition().y-300)))
+      {
+        //mSprite.SetColor(sf::Color(0, 255, 255));
+        targetY=mY-300;
+      }
+    }
   float difference=(targetY-mY+mPersonality*10);
+  
   float targetYDir;
   
   if(difference < -5)
-    targetYDir = std::max(-pow(abs(difference)/10., (3.+mPersonality/3)), -6.+mPersonality);
+    targetYDir = std::max(-pow(abs(difference)/10., (3.+mPersonality/3)), -12.+mPersonality);
   else if(difference > +5)
-    targetYDir = std::min(+pow(abs(difference)/10., (3.+mPersonality/3)), +6.+mPersonality);
+    targetYDir = std::min(+pow(abs(difference)/10., (3.+mPersonality/3)), +12.+mPersonality);
   
-  if(abs(targetYDir)<2.0)
+  if(abs(targetYDir)<4.0)
     targetYDir=0;
   
   if(targetYDir > mYDir)
-    mYDir = boundby(mYDir, mYDir+10*timeDelta, targetYDir);
+    mYDir = boundby(mYDir, mYDir+15*timeDelta, targetYDir);
   else
-    mYDir = boundby(targetYDir, mYDir-10*timeDelta, mYDir);
+    mYDir = boundby(targetYDir, mYDir-15*timeDelta, mYDir);
 }

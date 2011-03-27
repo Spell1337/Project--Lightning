@@ -10,13 +10,14 @@
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
+class Obstacle;
 class Player;
 
 class Enemy
 {
 public:
   virtual ~Enemy(){};
-  virtual void update(float timeDelta)=0;
+  virtual void update(float timeDelta, Obstacle* nearestObstacle, Obstacle* secondNearestObstacle)=0;
   virtual void destroy();
   void setTarget(Player* target){ mTarget = target; };
   const sf::Sprite& getSprite(){ return mSprite; };

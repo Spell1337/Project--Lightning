@@ -19,6 +19,9 @@ using namespace std;
 list<Bullet*> gBullets;
 list<Enemy*> gEnemies;
 list<Obstacle*> gObstacles;
+float gSpeed = 1000.f;
+
+int gNumChasers=0;
 
 int main(int argc, char **argv)
 {
@@ -29,7 +32,6 @@ int main(int argc, char **argv)
   int fps = 0;
   int fpsCounter = 0;
   float score = 0;
-  float backgroundSpeed = 1000.f;
   float backgroundAccleration = 10.0f;
   sf::Clock basicClock;
   sf::Font font;
@@ -70,12 +72,13 @@ int main(int argc, char **argv)
     Chaser* chaser=new Chaser(y/4,  y);
     chaser->setTarget(&player);
     gEnemies.push_back(chaser);
+    gNumChasers++;
   }
   
   // Obstacles
   sf::Image obstacleImage;
   obstacleImage.LoadFromFile("Image/Obstacle.png");
-  for(int i=0; i<50; i++)
+  for(int i=1; i<50; i++)
   {
     if(sf::Randomizer::Random(0, 1))
       gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
@@ -135,10 +138,26 @@ int main(int argc, char **argv)
       lastSecond = curTime;
       fps = fpsCounter;
       fpsCounter = 0;
+      
+      if(gNumChasers < 3)
+      {
+        Chaser* chaser=new Chaser(sf::Randomizer::Random(0, 100),  sf::Randomizer::Random(0, 500));
+        chaser->setTarget(&player);
+        gEnemies.push_back(chaser);
+        gNumChasers++;
+      }
+      if(sf::Randomizer::Random(0, 4)==0)
+        if(gNumChasers < 7)
+        {
+          Chaser* chaser=new Chaser(sf::Randomizer::Random(0, 100),  sf::Randomizer::Random(0, 500));
+          chaser->setTarget(&player);
+          gEnemies.push_back(chaser);
+          gNumChasers++;
+        }  
     }
     
-    xPos+=timeDelta*backgroundSpeed;
-    backgroundSpeed+=timeDelta*backgroundAccleration;
+    xPos+=timeDelta*gSpeed;
+    gSpeed+=timeDelta*backgroundAccleration;
     score+=10.f*timeDelta;
     
     if(input.IsKeyDown(sf::Key::W))
@@ -147,10 +166,31 @@ int main(int argc, char **argv)
       player.moveDown(timeDelta);
     player.update(timeDelta);
 
+    struct { float x; Obstacle* obstacle; } nearestObstacle{2000, NULL};
+    struct { float x; Obstacle* obstacle; } secondNearestObstacle{2000, NULL};
+    
     foreach(Obstacle* obstacle, gObstacles)
     {
-      obstacle->update(timeDelta, -backgroundSpeed);
-      if(obstacle->getX() < 400)
+      obstacle->update(timeDelta, -gSpeed);
+      
+      float x = obstacle->getX();
+      
+      if(x < 2000)
+        if(x > 0)
+        {
+          if(x < nearestObstacle.x)
+          {
+            nearestObstacle.x=x;
+            nearestObstacle.obstacle=obstacle;
+          }
+          else if(x < secondNearestObstacle.x)
+          {
+            secondNearestObstacle.x=x;
+            secondNearestObstacle.obstacle=obstacle;
+          }
+        }
+      
+      if(x < 400)
       {
         obstacle->hitCheck(&player);
         list<Enemy*> tempEnemies=gEnemies;
@@ -160,7 +200,7 @@ int main(int argc, char **argv)
     }
     
     foreach(Enemy* enemy, gEnemies)
-      enemy->update(timeDelta);
+      enemy->update(timeDelta, nearestObstacle.obstacle, secondNearestObstacle.obstacle);
     
     list<Bullet*> tempBullets=gBullets;
     foreach(Bullet* bullet, tempBullets)
@@ -243,6 +283,7 @@ void RemoveBullet(Bullet* bullet)
 
 void RemoveEnemy(Enemy* enemy)
 {
+  gNumChasers--;
   gEnemies.remove(enemy);
   delete enemy;
 }

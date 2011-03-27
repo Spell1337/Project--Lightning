@@ -16,7 +16,7 @@ class Obstacle
 {
 public:
   Obstacle(float x, float y, const sf::Image& image);
-  const sf::FloatRect& getRect();
+  const sf::FloatRect& getRect(){ return mRect; };
   void update(float delta, float xSpeed);
   bool hits(const sf::FloatRect& other);
   void hitCheck(Player* player);

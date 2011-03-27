@@ -3,7 +3,7 @@
 
 class Enemy;
 class Bullet;
-extern std::list<Bullet*> gBullets;
+extern float gSpeed;
 void RegisterBullet(Bullet* bullet);
 void RemoveBullet(Bullet* bullet);
 void RemoveEnemy(Enemy* enemy);
