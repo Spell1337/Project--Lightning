@@ -10,6 +10,6 @@
 
 void Enemy::destroy()
 {
-  mTarget->doLife(0.2f);
+  mTarget->doLife(0.05f);
   RemoveEnemy(this);
 }

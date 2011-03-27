@@ -55,8 +55,8 @@ void Player::energyBash()
 {
   if(mEnergyBar > 0.5f)
   {
-    mSprite.SetX(mSprite.GetPosition().x+200);
-    mXAdvancement+=200;
+    mSprite.SetX(mSprite.GetPosition().x+300);
+    mXAdvancement+=300;
     mEnergyBar-=0.4f;
   }
 }
