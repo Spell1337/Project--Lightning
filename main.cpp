@@ -108,6 +108,12 @@ int main(int argc, char **argv)
   energyBarFill.SetPosition(20, WINDOW_HEIGHT-60);
   energyBarFill.SetBlendMode(sf::Blend::Add);
   
+  // Music
+  sf::Music music;
+  music.OpenFromFile("Sound/Music.ogg");
+  music.SetLoop(true);
+  music.Play();
+  
   while(app.IsOpened())
   {
     // Process events

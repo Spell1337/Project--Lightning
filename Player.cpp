@@ -15,7 +15,7 @@ Player::Player(sf::Image& image, sf::Image& impulse)
   mYDir = 0.0f;
   mXAdvancement = 0;
   mSprite.SetImage(image);
-  mSprite.SetPosition(250, 400);
+  mSprite.SetPosition(350, 400);
   mSprite.SetCenter(image.GetWidth()/2, image.GetHeight()/2);
   mImpulse.SetImage(impulse);
   mImpulse.SetBlendMode(sf::Blend::Add);
