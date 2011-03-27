@@ -51,7 +51,7 @@ void Chaser::update(float timeDelta, Obstacle* nearestObstacle, Obstacle* second
   mSprite.SetY(mY);
   //mSprite.SetColor(sf::Color(255, 255, 255));
   
-  float targetY=mTarget->getY();
+  float targetY=mTarget->getY()+mPersonality*50;
   static const float checkDistance=gSpeed;
   if(nearestObstacle)
     if(nearestObstacle->hits(sf::FloatRect(mSprite.GetPosition().x, mSprite.GetPosition().y+mYDir, mSprite.GetPosition().x+checkDistance, mSprite.GetPosition().y+50+mYDir)))
@@ -68,7 +68,7 @@ void Chaser::update(float timeDelta, Obstacle* nearestObstacle, Obstacle* second
         targetY=mY-300;
       }
     }
-  float difference=(targetY-mY+mPersonality*10);
+  float difference=targetY-mY;
   
   float targetYDir;
   
@@ -77,8 +77,8 @@ void Chaser::update(float timeDelta, Obstacle* nearestObstacle, Obstacle* second
   else if(difference > +5)
     targetYDir = std::min(+pow(abs(difference)/10., (3.+mPersonality/3)), +12.+mPersonality);
   
-  if(abs(targetYDir)<4.0)
-    targetYDir=0;
+  //if(abs(targetYDir)<1.0)
+   // targetYDir=0;
   
   if(targetYDir > mYDir)
     mYDir = boundby(mYDir, mYDir+15*timeDelta, targetYDir);
