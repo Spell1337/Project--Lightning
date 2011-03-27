@@ -32,7 +32,7 @@ void FXSprite::update(float timeDelta)
 {
   mInternalTimer+=timeDelta;
   int frame=mInternalTimer/mFrameTime;
-  mSprite.SetSubRect(sf::IntRect(mFrameWidth*frame, 0, mFrameWidth*frame+mFrameWidth, mFrameHeight));
+  mSprite.SetSubRect(sf::IntRect(mFrameWidth*frame+1, 0, mFrameWidth*frame+mFrameWidth, mFrameHeight));
   mSprite.Move(mXDir*timeDelta, mYDir*timeDelta);
   
   if(mInternalTimer > mFrameTime*(mFrameNumber+1))

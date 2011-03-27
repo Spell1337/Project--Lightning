@@ -229,14 +229,14 @@ int main(int argc, char **argv)
     gSpeed+=timeDelta*backgroundAccleration;
     score+=10.f*timeDelta;
     
-    if(input.IsKeyDown(sf::Key::W))
+    if(input.IsKeyDown(sf::Key::Up))
       player.moveUp(timeDelta);
-    else if(input.IsKeyDown(sf::Key::S))
+    else if(input.IsKeyDown(sf::Key::Down))
       player.moveDown(timeDelta);
     
-    if(input.IsKeyDown(sf::Key::A))
+    if(input.IsKeyDown(sf::Key::Left))
       player.moveLeft(timeDelta);
-    else if(input.IsKeyDown(sf::Key::D))
+    else if(input.IsKeyDown(sf::Key::Right))
       player.moveRight(timeDelta);
     
     player.update(timeDelta);
