@@ -22,6 +22,7 @@ protected:
     static sf::Image gBulletImg;
     float mYDir;
     float mY;
+    float mTargetX;
     float mInternalTimer;
     float mShootTimer;
     float mPersonality;

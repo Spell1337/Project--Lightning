@@ -18,7 +18,8 @@ Chaser::Chaser(float x, float y)
 {
   mSprite.SetImage(gImage);
   mSprite.SetCenter(gImage.GetWidth()/2, gImage.GetHeight()/2);
-  mSprite.SetPosition(x, y);
+  mSprite.SetPosition(-100, y);
+  mTargetX = x;
   mYDir = 0.0f;
   mShootTimer = sf::Randomizer::Random(-2.f, 0.f);
   mInternalTimer = sf::Randomizer::Random(0.f, 20.f);
@@ -50,6 +51,8 @@ void Chaser::update(float timeDelta, Obstacle* nearestObstacle, Obstacle* second
   }
   
   mY+=mYDir;
+  float xDir=((mTargetX-mSprite.GetPosition().x)*timeDelta);
+  mSprite.Move(xDir,0);
   mSprite.SetY(mY);
   //mSprite.SetColor(sf::Color(255, 255, 255));
   
