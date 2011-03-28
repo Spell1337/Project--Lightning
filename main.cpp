@@ -320,7 +320,7 @@ int main(int argc, char **argv)
           }
         }
       
-      if(x < 400)
+      if(x < 1500)
       {
         obstacle->hitCheck(&player);
         list<Enemy*> tempEnemies=gEnemies;

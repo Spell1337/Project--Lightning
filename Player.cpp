@@ -26,7 +26,7 @@ Player::Player(sf::Image& image, sf::Image& impulse)
 void Player::update(float delta)
 { 
   float xAdvancement=mSprite.GetPosition().x-350;
-  mSprite.Move(-xAdvancement*delta+mXDir*delta, mYDir*delta);
+  mSprite.Move(-xAdvancement*delta*2+mXDir*delta, mYDir*delta);
   
   mYDir = mYDir-mYDir*std::min(delta*3, 1.0f);
   mXDir = mXDir-mXDir*std::min(delta*3, 1.0f);
@@ -63,12 +63,12 @@ void Player::moveUp(float delta)
 
 void Player::moveLeft(float delta)
 {
-  mXDir -= 2000.f*delta;
+  mXDir -= 1500.f*delta;
 }
 
 void Player::moveRight(float delta)
 {
-  mXDir += 2000.f*delta;
+  mXDir += 1500.f*delta;
 }
 
 void Player::energyDash()
