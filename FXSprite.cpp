@@ -41,5 +41,10 @@ void FXSprite::update(float timeDelta)
 
 void FXSprite::RegisterFxType(string name, const sf::Image& image, float frameTime, int frameWidth)
 {
-  gDefinitions[name] = FXDefintion{image, frameTime, frameWidth, image.GetWidth()/frameWidth};
+  FXDefintion fxDef;
+  fxDef.image = image;
+  fxDef.frameTime = frameTime;
+  fxDef.frameWidth = frameWidth;
+  fxDef.frameNumber = image.GetWidth()/frameWidth;
+  gDefinitions[name] = fxDef;
 }

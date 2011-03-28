@@ -12,6 +12,7 @@
 class Player
 {
 public:
+  Player(){};
   Player(sf::Image& image, sf::Image& impulse);
   void update(float delta);
   void moveUp(float delta);

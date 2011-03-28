@@ -55,7 +55,8 @@ int main(int argc, char **argv)
   playerImg.LoadFromFile("Image/Player.png");
   sf::Image playerImpulseAnim;
   playerImpulseAnim.LoadFromFile("Image/Impulse.png");
-  Player player(playerImg, playerImpulseAnim);
+  Player player;
+  player = Player(playerImg, playerImpulseAnim);
   
   // Da background
   sf::Image background;
@@ -161,20 +162,6 @@ int main(int argc, char **argv)
           case sf::Key::Space:
             if(gGameOver)
             {
-              gGameOver = false;
-              xPos = 0;
-              for(int i=1; i<5; i++)
-              {
-                if(sf::Randomizer::Random(0, 1))
-                  gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
-                if(sf::Randomizer::Random(0, 1))
-                  gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
-              }
-              generatedEnvironment=10000;
-              player = Player(playerImg, playerImpulseAnim);
-              gSpeed = 800.f;
-              gPoints = 0;
-              
               foreach(Enemy* enemy, gEnemies)
                 delete enemy;
               foreach(Bullet* bullet, gBullets)
@@ -183,12 +170,27 @@ int main(int argc, char **argv)
                 delete obstacle;
               foreach(FXSprite* effect, gEffects)
                 delete effect;
-              
+                            
               gEnemies.clear();
               gNumChasers=0;
               gBullets.clear();
               gObstacles.clear();
               gEffects.clear();
+              
+              gGameOver = false;
+              xPos = 0;
+              player = Player(playerImg, playerImpulseAnim);
+              gSpeed = 800.f;
+              gPoints = 0;
+              
+              for(int i=2; i<5; i++)
+              {
+                if(sf::Randomizer::Random(0, 1))
+                  gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
+                if(sf::Randomizer::Random(0, 1))
+                  gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
+              }
+              generatedEnvironment=10000;
               gTime=0.0f;
             }
             break;
@@ -295,8 +297,13 @@ int main(int argc, char **argv)
     
     player.update(timeDelta);
 
-    struct { float x; Obstacle* obstacle; } nearestObstacle{2000, NULL};
-    struct { float x; Obstacle* obstacle; } secondNearestObstacle{2000, NULL};
+    struct { float x; Obstacle* obstacle; } nearestObstacle;
+    struct { float x; Obstacle* obstacle; } secondNearestObstacle;
+    nearestObstacle.obstacle = NULL;
+    nearestObstacle.x = 2000;
+    secondNearestObstacle.obstacle = NULL;
+    secondNearestObstacle.x = 2000;
+
     
     list<Obstacle*> tempObstacles=gObstacles;
     foreach(Obstacle* obstacle, tempObstacles)

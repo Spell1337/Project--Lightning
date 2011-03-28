@@ -78,7 +78,7 @@ void Chaser::update(float timeDelta, Obstacle* nearestObstacle, Obstacle* second
     }
   float difference=targetY-mY;
   
-  float targetYDir;
+  float targetYDir=0.f;
   
   if(difference < -5)
     targetYDir = std::max(-pow(abs(difference)/10., (3.+mPersonality/3)), -12.+mPersonality);
