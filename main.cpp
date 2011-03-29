@@ -159,51 +159,49 @@ int main(int argc, char **argv)
           case sf::Key::Escape:
             app.Close();
             break;
-          case sf::Key::Space:
-            if(gGameOver)
-            {
-              foreach(Enemy* enemy, gEnemies)
-                delete enemy;
-              foreach(Bullet* bullet, gBullets)
-                delete bullet;
-              foreach(Obstacle* obstacle, gObstacles)
-                delete obstacle;
-              foreach(FXSprite* effect, gEffects)
-                delete effect;
-                            
-              gEnemies.clear();
-              gNumChasers=0;
-              gBullets.clear();
-              gObstacles.clear();
-              gEffects.clear();
-              
-              gGameOver = false;
-              xPos = 0;
-              player = Player(playerImg, playerImpulseAnim);
-              gSpeed = 800.f;
-              gPoints = 0;
-              
-              for(int i=2; i<5; i++)
-              {
-                if(sf::Randomizer::Random(0, 1))
-                  gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
-                if(sf::Randomizer::Random(0, 1))
-                  gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
-              }
-              generatedEnvironment=10000;
-              gTime=0.0f;
-            }
-            break;
           default:
             break;
         }
       
-      if(!gGameOver)
         if(Event.Type == sf::Event::KeyPressed)
           switch(Event.Key.Code)
           {
             case sf::Key::Space:
-              player.energyDash();
+              if(!gGameOver)
+                player.energyDash();
+              else if(gGameOver)
+              {
+                foreach(Enemy* enemy, gEnemies)
+                  delete enemy;
+                foreach(Bullet* bullet, gBullets)
+                  delete bullet;
+                foreach(Obstacle* obstacle, gObstacles)
+                  delete obstacle;
+                foreach(FXSprite* effect, gEffects)
+                  delete effect;
+                              
+                gEnemies.clear();
+                gNumChasers=0;
+                gBullets.clear();
+                gObstacles.clear();
+                gEffects.clear();
+                
+                gGameOver = false;
+                xPos = 0;
+                player = Player(playerImg, playerImpulseAnim);
+                gSpeed = 800.f;
+                gPoints = 0;
+                
+                for(int i=2; i<5; i++)
+                {
+                  if(sf::Randomizer::Random(0, 1))
+                    gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(-600, -400), obstacleImage));
+                  if(sf::Randomizer::Random(0, 1))
+                    gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
+                }
+                generatedEnvironment=10000;
+                gTime=0.0f;
+              }
               break;
             default:
               break;
