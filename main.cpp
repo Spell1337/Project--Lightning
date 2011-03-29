@@ -26,6 +26,7 @@ map<string, sf::SoundBuffer> gSoundBuffer;
 map<string, float> gLastPlay;
 list<sf::Sound*> gPlayingSounds;
 
+float gLastGameTime = 0.0f;
 float gTime = 0.0f;
 float gSpeed = 800.f;
 float gPoints = 0;
@@ -37,6 +38,8 @@ int main(int argc, char **argv)
 {
   sf::RenderWindow app(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Project: Lightning");
   app.UseVerticalSync(true);
+  app.EnableKeyRepeat(false);
+  
   float timeDelta = 0;
   float lastSecond = 0;
   int fps = 0;
@@ -200,7 +203,7 @@ int main(int argc, char **argv)
                     gObstacles.push_back(new Obstacle(i*2000+sf::Randomizer::Random(0, 300), sf::Randomizer::Random(400, 600), obstacleImage));
                 }
                 generatedEnvironment=10000;
-                gTime=0.0f;
+                gLastGameTime=gTime;
               }
               break;
             default:
@@ -258,7 +261,7 @@ int main(int argc, char **argv)
       }
       
       // Spawn new chasers
-      if(gNumChasers < (3+gTime/30.0f))
+      if(gNumChasers < (3+(gTime-gLastGameTime)/20.0f))
       {
         Chaser* chaser=new Chaser(sf::Randomizer::Random(0, 200),  sf::Randomizer::Random(0, 500));
         chaser->setTarget(&player);
@@ -266,7 +269,7 @@ int main(int argc, char **argv)
         gNumChasers++;
       }
       if(sf::Randomizer::Random(0, 4)==0)
-        if(gNumChasers < (5+gTime/15.0f))
+        if(gNumChasers < (5+(gTime-gLastGameTime)/10.0f))
         {
           Chaser* chaser=new Chaser(sf::Randomizer::Random(0, 200),  sf::Randomizer::Random(0, 500));
           chaser->setTarget(&player);
